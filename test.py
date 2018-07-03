@@ -1,14 +1,14 @@
 import cv2, os, pathlib
 
-filePath = "C:\\Users\\Yongjin\\Desktop\\test\\images"
+filePath = 'images'
 faceCascade = cv2.CascadeClassifier('../opencv/sources/data/haarcascades/haarcascade_frontalface_default.xml')
 
 for directoryName in os.listdir(filePath):
-    name = directoryName
-    cascadePath = "cascaded\\" + name
+    celebName = directoryName
+    cascadePath = 'cascaded/' + celebName
     pathlib.Path(cascadePath).mkdir(parents=True, exist_ok=True)
-    for fileName in os.listdir(filePath + '/' + name):
-        imageName = cv2.imread('images/' + name + '/' + fileName)
+    for fileName in os.listdir(filePath + '/' + celebName):
+        imageName = cv2.imread('images/' + celebName + '/' + fileName)
         gray = cv2.cvtColor(imageName, cv2.COLOR_BGR2GRAY)
         faces = faceCascade.detectMultiScale(
             gray,
@@ -23,8 +23,8 @@ for directoryName in os.listdir(filePath):
             cropped = imageName[y:y+h, x:x+w]
 
         os.chdir(cascadePath)
-        cv2.imshow("Faces found", imageName)
+        cv2.imshow('Faces found', imageName)
         cv2.imwrite(fileName, cropped)
-        os.chdir("../../")
+        os.chdir('../../')
         cv2.waitKey(500)
         cv2.destroyAllWindows()
