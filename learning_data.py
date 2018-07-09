@@ -5,19 +5,18 @@ from keras.utils import np_utils
 import numpy as np
 import os
 
-# 분류 대상 카테고리
 root_dir = "../cropped_test_image/"
+# root_dir = "../cropped_image/"
 categories = os.listdir(root_dir)
 nb_classes = len(categories)
 image_size = 50
 
 
-# 데이터 로드하기 --- (※1)
 def main():
     X_train, X_test, y_train, y_test = np.load("./data/celeb.npy")
     # 데이터 정규화하기
     X_train = X_train.astype("float") / 256
-    X_test  = X_test.astype("float")  / 256
+    X_test  = X_test.astype("float") / 256
     y_train = np_utils.to_categorical(y_train, nb_classes)
     y_test  = np_utils.to_categorical(y_test, nb_classes)
     # 모델을 훈련하고 평가하기
@@ -25,39 +24,51 @@ def main():
     model_eval(model, X_test, y_test)
 
 
-# 모델 구축하기 --- (※2)
 def build_model(in_shape):
     model = Sequential()
+    # Convolution
     model.add(Convolution2D(32, 3, 3, border_mode='same', input_shape=in_shape))
     model.add(Activation('relu'))
+    # Pooling
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
+
+    # second Convolution Layer
     model.add(Convolution2D(64, 3, 3, border_mode='same'))
     model.add(Activation('relu'))
+
+    # third Convolution Layer
     model.add(Convolution2D(64, 3, 3))
+    model.add(Activation('relu'))
+
+    # Pooling
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
-    model.add(Flatten()) 
+
+    # Flattening
+    model.add(Flatten())
+
+    # Full connection
     model.add(Dense(512))
     model.add(Activation('relu'))
     model.add(Dropout(0.5))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
+
+    # Compiling CNN
     model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     return model
 
 
-# 모델 훈련하기 --- (※3)
 def model_train(X, y):
     model = build_model(X.shape[1:])
-    model.fit(X, y, batch_size=32, nb_epoch=300)
-    # 모델 저장하기 --- (※4)
+    model.fit(X, y, batch_size=32, nb_epoch=30)
+
     hdf5_file = "./data/celeb-model.hdf5"
     model.save_weights(hdf5_file)
     return model
 
 
-# 모델 평가하기 --- (※5)
 def model_eval(model, X, y):
     score = model.evaluate(X, y)
     print('loss=', score[0])

@@ -3,11 +3,13 @@ import cv2, os, pathlib
 
 def cropping():
     filePath = '../original_test_image'
+    #filePath = '../original_image'
     faceCascade = cv2.CascadeClassifier('../opencv/sources/data/haarcascades/haarcascade_frontalface_default.xml')
 
     for directoryName in os.listdir(filePath):
         celebName = directoryName
         cascadePath = '../cropped_test_image/' + celebName
+        #cascadePath = '../cropped_image/' + celebName
         pathlib.Path(cascadePath).mkdir(parents=True, exist_ok=True)
         for fileName in os.listdir(filePath + '/' + celebName):
             imageName = cv2.imread(filePath + '/' + celebName + '/' + fileName)
@@ -21,11 +23,7 @@ def cropping():
             )
             if len(faces) > 0:
                 for (x, y, w, h) in faces:
-                    # cv2.rectangle(imageName, (x, y), (x + w, y + h), (0, 255, 0), 2)
                     cropped = imageName[y:y+h, x:x+w]
                 os.chdir(cascadePath)
-                # cv2.imshow('Faces found', imageName)
                 cv2.imwrite(fileName, cropped)
-                os.chdir('../../opencv_test')
-                # cv2.waitKey(500)
-                # cv2.destroyAllWindows()
+                os.chdir('../../tensorflow_test')

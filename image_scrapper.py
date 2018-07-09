@@ -24,13 +24,13 @@ def download_image():
             url_keyword = "%20".join(url_keyword)
         else:
             url_keyword = keyword
-        url = 'https://www.bing.com/images/search?q=soccer%20player%20' + url_keyword + '&qs=n&form=QBIR&sp=-1&pq=cristiano%20ronaldo&sc=8-17&sk=&cvid=9859BB3984EB4F418553CF75774C3446'
+        url = 'https://www.bing.com/images/search?q=soccer%20player%20' + url_keyword + '&FORM=HDRSC2'
         header = {'User-Agent': "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36"}
         down_counter = 0
         try:
             driver.get(url)
             i = 0
-            while i < 2:
+            while i < 4:
                 i += 1
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 time.sleep(1)
@@ -54,7 +54,6 @@ def download_image():
                         if original_image.get('data-reactid') is not None:
                             if '&w=60&h=60&c=7' not in original_image.get('src'):
                                 original_image_src = original_image.get('src')
-                                # print(original_image_src)
                                 name = random.randrange(1, 1001)
                                 if not os.path.isdir("../original_test_image/" + keyword + "/"):
                                     os.mkdir("../original_test_image/" + keyword + "/")
@@ -66,4 +65,4 @@ def download_image():
                     pass
         except urllib.request.HTTPError:
             print('error')
-        print(down_counter)
+        print('다운받은 이미지 개수 : ' + str(down_counter))
