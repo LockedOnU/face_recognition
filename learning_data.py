@@ -1,7 +1,8 @@
 from keras.models import Sequential
-from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.utils import np_utils
+import keras
 import numpy as np
 import os
 
@@ -27,23 +28,33 @@ def main():
 def build_model(in_shape):
     model = Sequential()
     # Convolution
-    model.add(Convolution2D(32, 3, 3, border_mode='same', input_shape=in_shape))
-    model.add(Activation('relu'))
-    # Pooling
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    # second Convolution Layer
-    model.add(Convolution2D(64, 3, 3, border_mode='same'))
-    model.add(Activation('relu'))
-
-    # third Convolution Layer
-    model.add(Convolution2D(64, 3, 3))
+    model.add(Conv2D(32, (3, 3), padding='same', input_shape=in_shape))
     model.add(Activation('relu'))
 
     # Pooling
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
+
+    # Convolution Layer
+    model.add(Conv2D(64, (3, 3), padding='same'))
+    model.add(Activation('relu'))
+
+    model.add(Conv2D(64, (3, 3), padding='same'))
+    # Pooling
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    # # Convolution Layer
+    # model.add(Conv2D(64, (3, 3), padding='same'))
+    # model.add(Activation('relu'))
+
+    # Convolution Layer
+    # model.add(Conv2D(64, (3, 3), padding='same'))
+    # model.add(Activation('relu'))
+
+    # # Pooling
+    # model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Dropout(0.25))
 
     # Flattening
     model.add(Flatten())
@@ -56,13 +67,14 @@ def build_model(in_shape):
     model.add(Activation('softmax'))
 
     # Compiling CNN
+    # opt = keras.optimizers.rmsprop(lr=0.0001, decay=1e-6)
     model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     return model
 
 
 def model_train(X, y):
     model = build_model(X.shape[1:])
-    model.fit(X, y, batch_size=32, nb_epoch=30)
+    model.fit(X, y, batch_size=32, epochs=30)
 
     hdf5_file = "./data/celeb-model.hdf5"
     model.save_weights(hdf5_file)

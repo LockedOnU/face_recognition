@@ -20,8 +20,8 @@ def make_npy():
         print('----', cat, '처리 중')
         for i, f in enumerate(files):
             img = Image.open(f)
-            img = img.convert("RGB") # 색상 모드 변경
-            img = img.resize((image_size, image_size)) # 이미지 크기 변경
+            img = img.convert("RGB")  # 색상 모드 변경
+            img = img.resize((image_size, image_size))  # 이미지 크기 변경
             data = np.asarray(img)
             X.append(data)
             Y.append(idx)

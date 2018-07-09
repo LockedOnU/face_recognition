@@ -4,26 +4,29 @@ import cv2, os, pathlib
 def cropping():
     filePath = '../original_test_image'
     #filePath = '../original_image'
-    faceCascade = cv2.CascadeClassifier('../opencv/sources/data/haarcascades/haarcascade_frontalface_default.xml')
+    classifierPath = './cascade_classifier/'
 
-    for directoryName in os.listdir(filePath):
-        celebName = directoryName
-        cascadePath = '../cropped_test_image/' + celebName
-        #cascadePath = '../cropped_image/' + celebName
-        pathlib.Path(cascadePath).mkdir(parents=True, exist_ok=True)
-        for fileName in os.listdir(filePath + '/' + celebName):
-            imageName = cv2.imread(filePath + '/' + celebName + '/' + fileName)
-            gray = cv2.cvtColor(imageName, cv2.COLOR_BGR2GRAY)
-            faces = faceCascade.detectMultiScale(
-                gray,
-                scaleFactor=1.1,
-                minNeighbors=5,
-                minSize=(30, 30),
-                flags=cv2.CASCADE_SCALE_IMAGE
-            )
-            if len(faces) > 0:
-                for (x, y, w, h) in faces:
-                    cropped = imageName[y:y+h, x:x+w]
-                os.chdir(cascadePath)
-                cv2.imwrite(fileName, cropped)
-                os.chdir('../../tensorflow_test')
+    for classifier in os.listdir(classifierPath):
+        faceCascade = cv2.CascadeClassifier(classifierPath + classifier)
+
+        for directoryName in os.listdir(filePath):
+            celebName = directoryName
+            cascadePath = '../cropped_test_image/' + classifier + '/' + celebName
+            #cascadePath = '../cropped_image/' + celebName
+            pathlib.Path(cascadePath).mkdir(parents=True, exist_ok=True)
+            for fileName in os.listdir(filePath + '/' + celebName):
+                imageName = cv2.imread(filePath + '/' + celebName + '/' + fileName)
+                gray = cv2.cvtColor(imageName, cv2.COLOR_BGR2GRAY)
+                faces = faceCascade.detectMultiScale(
+                    gray,
+                    scaleFactor=1.1,
+                    minNeighbors=5,
+                    minSize=(30, 30),
+                    flags=cv2.CASCADE_SCALE_IMAGE
+                )
+                if len(faces) > 0:
+                    for (x, y, w, h) in faces:
+                        cropped = imageName[y:y+h, x:x+w]
+                    os.chdir(cascadePath)
+                    cv2.imwrite(fileName, cropped)
+                    os.chdir('../../tensorflow_test')

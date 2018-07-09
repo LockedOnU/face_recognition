@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import urllib.request
 from selenium import webdriver
-import random
 import time
 import os
 
@@ -24,19 +23,16 @@ def download_image():
             url_keyword = "%20".join(url_keyword)
         else:
             url_keyword = keyword
-        url = 'https://www.bing.com/images/search?q=soccer%20player%20' + url_keyword + '&FORM=HDRSC2'
+        url = 'https://www.bing.com/images/search?q=' + url_keyword + '&FORM=HDRSC2'
         header = {'User-Agent': "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36"}
         down_counter = 0
         try:
             driver.get(url)
             i = 0
-            while i < 4:
+            while i < 6:
                 i += 1
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 time.sleep(1)
-            # req_page = urllib.request.Request(url, headers=header)
-            # html = urllib.request.urlopen(req_page)
-            # page_soup = BeautifulSoup(html, 'lxml')
             page_soup = BeautifulSoup(driver.page_source, 'lxml')
 
             image_links = page_soup.find_all('a', attrs={'class': 'iusc'})
@@ -54,13 +50,16 @@ def download_image():
                         if original_image.get('data-reactid') is not None:
                             if '&w=60&h=60&c=7' not in original_image.get('src'):
                                 original_image_src = original_image.get('src')
-                                name = random.randrange(1, 1001)
                                 if not os.path.isdir("../original_test_image/" + keyword + "/"):
                                     os.mkdir("../original_test_image/" + keyword + "/")
-                                full_name = "../original_test_image/" + keyword + "/" + str(name) + ".jpg"
+                                    full_name = "../original_test_image/" + keyword + "/1.jpg"
+                                    urllib.request.urlretrieve(original_image_src, full_name)
+                                else:
+                                    image_list = os.listdir("../original_test_image/" + keyword + "/")
+                                    name = image_list.__len__() + 1
+                                    full_name = "../original_test_image/" + keyword + "/" + str(name) + ".jpg"
+                                    urllib.request.urlretrieve(original_image_src, full_name)
                                 down_counter += 1
-
-                            urllib.request.urlretrieve(original_image_src, full_name)
                 else:
                     pass
         except urllib.request.HTTPError:
