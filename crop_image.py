@@ -4,6 +4,7 @@ import cv2, os, pathlib
 def cropping():
     filePath = '../original_test_image'
     #filePath = '../original_image'
+
     classifierPath = './cascade_classifier/'
 
     for classifier in os.listdir(classifierPath):
@@ -11,7 +12,7 @@ def cropping():
 
         for directoryName in os.listdir(filePath):
             celebName = directoryName
-            cascadePath = '../cropped_test_image/' + classifier + '/' + celebName
+            cascadePath = '../cropped_test_image/' + celebName
             #cascadePath = '../cropped_image/' + celebName
             pathlib.Path(cascadePath).mkdir(parents=True, exist_ok=True)
             for fileName in os.listdir(filePath + '/' + celebName):
@@ -28,5 +29,10 @@ def cropping():
                     for (x, y, w, h) in faces:
                         cropped = imageName[y:y+h, x:x+w]
                     os.chdir(cascadePath)
-                    cv2.imwrite(fileName, cropped)
+
+                    imageNameList = fileName.split('.')[0]
+                    classifierNameList = classifier.split('.')[0]
+                    fullName = imageNameList + '_' + classifierNameList + '.jpg'
+                    cv2.imwrite(fullName, cropped)
+
                     os.chdir('../../tensorflow_test')
