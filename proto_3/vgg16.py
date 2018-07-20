@@ -32,7 +32,6 @@ def convert_images_to_npz():
                 else:
                     x_train = np.concatenate((x_train, img), 0)
                 y_train = np.append(y_train, category_num)
-        print(y_train)
 
         if x_train is not None:
             output_filename = './data/dataSet/dataSet_' + str(category_num) + '.npz'
@@ -53,12 +52,12 @@ def concat_shuffle_npz():
     print(index_to_category_list)
 
     npz_file_names = []
-    for i in range(len(os.listdir('./data/dataSet/'))):
-        npz_file_names.append('./data/dataSet/dataSet_' + str(i+1) + '.npz')
     x_train = None
     y_train = None
-    for i in range(1, len(npz_file_names)):
-        print(i)
+
+    for i in range(len(os.listdir('./data/dataSet/'))):
+        npz_file_names.append('./data/dataSet/dataSet_' + str(i+1) + '.npz')
+    for i in range(len(npz_file_names)):
         data = np.load(npz_file_names[i])
         x_train_temp = data['x_train']
         y_train_temp = data['y_train']
@@ -74,8 +73,8 @@ def concat_shuffle_npz():
     if 'dataSet_all.npz' not in os.listdir('./data'):
         np.savez_compressed("./data/dataSet_all.npz", x_train=x_train, y_train=y_train)
     print(x_train.shape)
-    print(x_train.shape[0])
-    print(getsizeof(x_train))
+    print(y_train)
+    print(y_train.shape)
 
     s = np.arange(x_train.shape[0])
     np.random.shuffle(s)
@@ -96,6 +95,9 @@ def test_npz():
 
     x_train = data['x_train']
     y_train = data['y_train']
+    print(y_train)
+    print(len(y_train))
+    print(y_train.shape)
     ind = data['ind']
     index_to_category = {int(c[0]): c[1] for i, c in enumerate(ind)}
     print(x_train.shape)

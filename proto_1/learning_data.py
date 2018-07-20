@@ -44,18 +44,6 @@ def build_model(in_shape):
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
 
-    # # Convolution Layer
-    # model.add(Conv2D(64, (3, 3), padding='same'))
-    # model.add(Activation('relu'))
-
-    # Convolution Layer
-    # model.add(Conv2D(64, (3, 3), padding='same'))
-    # model.add(Activation('relu'))
-
-    # # Pooling
-    # model.add(MaxPooling2D(pool_size=(2, 2)))
-    # model.add(Dropout(0.25))
-
     # Flattening
     model.add(Flatten())
 

@@ -24,7 +24,7 @@ def main():
 
 
 def model_train(X, y):
-    model = vgg16_model(X.shape[1:])
+    model = vgg16_model(X.shape[1:], '../vgg16.npy')
     model.fit(X, y, batch_size=32, epochs=30)
 
     hdf5_file = "./data/celeb-model.hdf5"
@@ -38,7 +38,7 @@ def model_eval(model, X, y):
     print('accuracy=', score[1])
 
 
-def vgg16_model(in_shape):
+def vgg16_model(in_shape, weights_path=None):
     model = Sequential()
     model.add(Conv2D(64, (3, 3), padding='same', activation='relu', input_shape=in_shape))
     model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
@@ -70,6 +70,9 @@ def vgg16_model(in_shape):
     model.add(Dense(4096, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(nb_classes, activation='softmax'))
+
+    if weights_path:
+        model.load_weights(weights_path)
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
