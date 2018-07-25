@@ -127,6 +127,7 @@ if __name__ == '__main__':
                         if name is 'predicting..':
                             result = model.predict(image)
                             name = index_to_category.get(result)
+                            print(name)
 
                         frame_count = 0
             else:

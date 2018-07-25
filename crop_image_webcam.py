@@ -68,11 +68,11 @@ if __name__ == '__main__':
         # 처음에 무조건 여기부터 들어옴
         if TrackingState is TRACKING_STATE_CHECK:
             # 흑백 변경
-            grayframe = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             # 히스토그램 평활화(재분할)
-            grayframe = cv2.equalizeHist(grayframe)
+            gray_frame = cv2.equalizeHist(gray_frame)
             # 얼굴 인식
-            faces = face_cascade.detectMultiScale(grayframe, 1.1, 5, 0, (30, 30))
+            faces = face_cascade.detectMultiScale(gray_frame, 1.1, 5, 0, (30, 30))
 
             # 얼굴이 1개라도 잡혔다면
             if len(faces) > 0:

@@ -1,8 +1,7 @@
 from sklearn.model_selection import train_test_split
 from PIL import Image
-import glob
 import numpy as np
-from multiprocessing import Pool
+import glob
 import time
 import os
 import random
@@ -10,7 +9,6 @@ import random
 
 def make_npy():
     root_dir = "../cropped_test_image/"
-    # root_dir = "../cropped_image/"
     categories = os.listdir(root_dir)
     image_size = 224
     x = []  # 이미지 데이터
@@ -32,6 +30,17 @@ def make_npy():
     # 학습 전용 데이터와 테스트 전용 데이터 분류하기 --- (※3)
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=random.randint(0, 100))
     X_valid, X_test, y_valid, y_test = train_test_split(x, y, test_size=0.5, random_state=random.randint(0, 100))
+
+    print('X_train.shape : ', X_train.shape)
+    print('X_valid.shape : ', X_valid.shape)
+    print('X_test.shape : ', X_test.shape)
+    print('X_train.shape[0] : ', X_train.shape[0])
+    print('y_train.shape : ', y_train.shape)
+    print('y_valid.shape : ', y_valid.shape)
+    print('y_test.shape : ', y_test.shape)
+    print('y_train.shape[0] : ', y_train.shape[0])
+    print('y_train : ', y_train)
+
     xy = (X_train, X_valid, X_test, y_train, y_valid, y_test)
     np.save("./data/celeb", xy)
 
@@ -40,10 +49,7 @@ def make_npy():
 
 
 if __name__ == '__main__':
-    # p = Pool(8)
     startTime = int(time.time())
-    # p.apply(make_npy)
-    # p.close()
     make_npy()
     endTime = int(time.time())
     print('npy 파일 생성 완료, 소요 시간 : ', (endTime - startTime))

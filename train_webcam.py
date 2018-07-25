@@ -11,12 +11,12 @@ from keras.layers import MaxPooling2D, Conv2D
 from keras.optimizers import SGD
 from keras.utils import np_utils
 from keras.models import load_model
-from keras import backend as K
+from keras import backend as k
 
 from load_image import extract_data, resize_with_pad, IMAGE_SIZE
 
 
-class Dataset(object):
+class DataSet(object):
 
     def __init__(self):
         self.X_train = None
@@ -26,50 +26,48 @@ class Dataset(object):
         self.Y_valid = None
         self.Y_test = None
 
-    def read(self, img_rows=IMAGE_SIZE, img_cols=IMAGE_SIZE, nb_classes=151):
+    def read(self, img_rows=IMAGE_SIZE, img_cols=IMAGE_SIZE, nb_classes=63):
         images, labels = extract_data('../cropped_test_image/')
         labels = np.reshape(labels, [-1])
         # numpy.reshape
-        X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.3,
+        x_train, x_test, y_train, y_test = train_test_split(images, labels, test_size=0.3,
                                                             random_state=random.randint(0, 100))
-        X_valid, X_test, y_valid, y_test = train_test_split(images, labels, test_size=0.5,
+        x_valid, x_test, y_valid, y_test = train_test_split(images, labels, test_size=0.5,
                                                             random_state=random.randint(0, 100))
-        print(K.image_dim_ordering())
-        if K.image_dim_ordering() == 'th':
-            X_train = X_train.reshape(X_train.shape[0], 3, img_rows, img_cols)
-            X_valid = X_valid.reshape(X_valid.shape[0], 3, img_rows, img_cols)
-            X_test = X_test.reshape(X_test.shape[0], 3, img_rows, img_cols)
-            input_shape = (3, img_rows, img_cols)
+        print(k.image_dim_ordering())
+        if k.image_dim_ordering() == 'th':
+            x_train = x_train.reshape(x_train.shape[0], 3, img_rows, img_cols)
+            x_valid = x_valid.reshape(x_valid.shape[0], 3, img_rows, img_cols)
+            x_test = x_test.reshape(x_test.shape[0], 3, img_rows, img_cols)
         else:
-            X_train = X_train.reshape(X_train.shape[0], img_rows, img_cols, 3)
-            X_valid = X_valid.reshape(X_valid.shape[0], img_rows, img_cols, 3)
-            X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 3)
-            input_shape = (img_rows, img_cols, 3)
+            x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 3)
+            x_valid = x_valid.reshape(x_valid.shape[0], img_rows, img_cols, 3)
+            x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 3)
 
         # the data, shuffled and split between train and test sets
-        print('X_train shape:', X_train.shape)
-        print(X_train.shape[0], 'train samples')
-        print(X_valid.shape[0], 'valid samples')
-        print(X_test.shape[0], 'test samples')
+        print('x_train shape:', x_train.shape)
+        print(x_train.shape[0], 'train samples')
+        print(x_valid.shape[0], 'valid samples')
+        print(x_test.shape[0], 'test samples')
 
         # convert class vectors to binary class matrices
-        Y_train = np_utils.to_categorical(y_train, nb_classes)
-        Y_valid = np_utils.to_categorical(y_valid, nb_classes)
-        Y_test = np_utils.to_categorical(y_test, nb_classes)
+        y_train = np_utils.to_categorical(y_train, nb_classes)
+        y_valid = np_utils.to_categorical(y_valid, nb_classes)
+        y_test = np_utils.to_categorical(y_test, nb_classes)
 
-        X_train = X_train.astype('float32')
-        X_valid = X_valid.astype('float32')
-        X_test = X_test.astype('float32')
-        X_train /= 255
-        X_valid /= 255
-        X_test /= 255
+        x_train = x_train.astype('float32')
+        x_valid = x_valid.astype('float32')
+        x_test = x_test.astype('float32')
+        x_train /= 255
+        x_valid /= 255
+        x_test /= 255
 
-        self.X_train = X_train
-        self.X_valid = X_valid
-        self.X_test = X_test
-        self.Y_train = Y_train
-        self.Y_valid = Y_valid
-        self.Y_test = Y_test
+        self.X_train = x_train
+        self.X_valid = x_valid
+        self.X_test = x_test
+        self.Y_train = y_train
+        self.Y_valid = y_valid
+        self.Y_test = y_test
 
 
 class Model(object):
@@ -79,7 +77,7 @@ class Model(object):
     def __init__(self):
         self.model = None
 
-    def build_model(self, dataset, nb_classes=151):
+    def build_model(self, dataset, nb_classes=63):
         self.model = Sequential()
 
         # Convolution
@@ -137,10 +135,10 @@ class Model(object):
 
         self.model.summary()
 
-    def train(self, dataset, batch_size=64, nb_epoch=40, data_augmentation=True):
+    def train(self, dataset, batch_size=32, nb_epoch=40, data_augmentation=True):
         # let's train the model using SGD + momentum (how original).
         #
-        sgd = SGD(lr=0.0001, decay=1e-6, momentum=0.9, nesterov=True)
+        sgd = SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
         self.model.compile(loss='categorical_crossentropy',
                            optimizer=sgd,
                            metrics=['accuracy'])
@@ -155,13 +153,13 @@ class Model(object):
             print('Using real-time data augmentation.')
 
             # this will do preprocessing and realtime data augmentation
-            datagen = ImageDataGenerator(
+            data_gen = ImageDataGenerator(
                 # featurewise_center=False,             # set input mean to 0 over the dataset
                 # samplewise_center=False,              # set each sample mean to 0
                 # featurewise_std_normalization=False,  # divide inputs by std of the dataset
                 # samplewise_std_normalization=False,   # divide each input by its std
                 # zca_whitening=False,                  # apply ZCA whitening
-                # rotation_range=20,                     # randomly rotate images in the range (degrees, 0 to 180)
+                rotation_range=20,                     # randomly rotate images in the range (degrees, 0 to 180)
                 # width_shift_range=0.2,                # randomly shift images horizontally (fraction of total width)
                 # height_shift_range=0.2,               # randomly shift images vertically (fraction of total height)
                 # horizontal_flip=True,                 # randomly flip images
@@ -170,11 +168,10 @@ class Model(object):
 
             # compute quantities required for featurewise normalization
             # (std, mean, and principal components if ZCA whitening is applied)
-            datagen.fit(dataset.X_train)
+            data_gen.fit(dataset.X_train)
 
-            # fit the model on the batches generated by datagen.flow()
-            self.model.fit_generator(datagen.flow(dataset.X_train, dataset.Y_train,
-                                                  batch_size=batch_size),
+            # fit the model on the batches generated by data_gen.flow()
+            self.model.fit_generator(data_gen.flow(dataset.X_train, dataset.Y_train, batch_size=batch_size),
                                      samples_per_epoch=dataset.X_train.shape[0],
                                      nb_epoch=nb_epoch,
                                      validation_data=(dataset.X_valid, dataset.Y_valid))
@@ -189,10 +186,10 @@ class Model(object):
         # self.model = np.load(file_path)
 
     def predict(self, image):
-        if K.image_dim_ordering() == 'th' and image.shape != (1, 3, IMAGE_SIZE, IMAGE_SIZE):
+        if k.image_dim_ordering() == 'th' and image.shape != (1, 3, IMAGE_SIZE, IMAGE_SIZE):
             image = resize_with_pad(image)
             image = image.reshape((1, 3, IMAGE_SIZE, IMAGE_SIZE))
-        elif K.image_dim_ordering() == 'tf' and image.shape != (1, IMAGE_SIZE, IMAGE_SIZE, 3):
+        elif k.image_dim_ordering() == 'tf' and image.shape != (1, IMAGE_SIZE, IMAGE_SIZE, 3):
             image = resize_with_pad(image)
             image = image.reshape((1, IMAGE_SIZE, IMAGE_SIZE, 3))
         image = image.astype('float32')
@@ -207,14 +204,14 @@ class Model(object):
 
 
 if __name__ == '__main__':
-    dataset = Dataset()
-    dataset.read()
+    data_set = DataSet()
+    data_set.read()
 
     model = Model()
-    model.build_model(dataset)
-    model.train(dataset, nb_epoch=150)
+    model.build_model(data_set)
+    model.train(data_set, nb_epoch=200)
     model.save()
 
     model = Model()
     model.load()
-    model.evaluate(dataset)
+    model.evaluate(data_set)
