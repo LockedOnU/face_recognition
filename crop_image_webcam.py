@@ -22,12 +22,12 @@ TRACKING_STATE_ON = 2
 def crop_image(p1, p2, frame):
     name_count = '1'.rjust(4, '0')
 
-    if len(os.listdir('F:\captured_images/')) is not 0:
-        last_file = os.listdir('F:\captured_images/')[-1]
+    if len(os.listdir('../captured_images/')) is not 0:
+        last_file = os.listdir('../captured_images/')[-1]
         last_num = last_file.split('.')[0]
         name_count = str(int(last_num) + 1).rjust(4, '0')
 
-    cv2.imwrite('F:\captured_images/' + name_count + '.jpg',
+    cv2.imwrite('../captured_images/' + name_count + '.jpg',
                 frame[p1[1]:p2[1], p1[0]:p2[0]], params=[cv2.IMWRITE_JPEG_QUALITY, 100])
 
 
