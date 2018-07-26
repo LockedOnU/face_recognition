@@ -36,7 +36,7 @@ if __name__ == '__main__':
     index_to_category = {i: ca for i, ca in enumerate(categories)}
     index_to_category_list = [[int(a), b] for a, b in index_to_category.items()]
 
-    cascade_path = './cascade_classifier/haarcascade_frontalface_default.xml'
+    cascade_path = './cascade_classifier/haarcascade_frontalface_alt2.xml'
     cascade = cv2.CascadeClassifier(cascade_path)
 
     # 추적 상태 저장용 변수
@@ -105,7 +105,7 @@ if __name__ == '__main__':
                 cv2.rectangle(frame, p1, p2, (255, 255, 255), 2, 1)
                 cv2.putText(frame, name, (p1[0] - 5, p1[1] - 5), font, 0.9, (255, 255, 0), 2)
 
-                if frame_count is 15:
+                if frame_count is 10:
                     if p1_temp[0] is 0:     # 맨 처음
                         p1_temp[0] = p1[0]
                         p1_temp[1] = p1[1]
