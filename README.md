@@ -2,4 +2,19 @@
 
 ## 1. Face-Predict
 
+### 1.1 Image Scrape
+
+### 1.2 Crop Image
+
+### 1.3 Make Data-set
+
+### 1.4 Train Data-set
+
+### 1.5 Predict Test Image
+
+
 ## 2. Realtime Face-Predict with WebCam
+
+### Crop Image with Webcam
+
+### Realtime Face-Predict
