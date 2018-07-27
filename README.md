@@ -44,5 +44,5 @@ numpy 배열 데이터를 학습하는 작업이다. (Data-set 파일을 생성�
   - Kujira Hikouzukue. (2017). 파이썬을 이용한 머신러닝, 딥러닝 실전 개발 입문 (윤인성, 옮김). 위키북스. (원서출판 2016).
   
 ### 2. 참고 사이트
-  - __마크다운 사용법 :__ <https://gist.github.com/ihoneymon/652be052a0727ad59601/>
-  
+  - __마크다운 사용법 :__ <https://gist.github.com/ihoneymon/652be052a0727ad59601>
+  - __Github에 100MB 이상의 파일을 올리는 방법 :__ <https://medium.com/@stargt/github%EC%97%90-100mb-%EC%9D%B4%EC%83%81%EC%9D%98-%ED%8C%8C%EC%9D%BC%EC%9D%84-%EC%98%AC%EB%A6%AC%EB%8A%94-%EB%B0%A9%EB%B2%95-9d9e6e3b94ef>
